@@ -168,6 +168,3 @@ public:
 		waitKey(0);
 	}
 };
-
-
-
