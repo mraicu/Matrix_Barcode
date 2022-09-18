@@ -12,20 +12,27 @@ class Generator {
 public:
 	int k, len;
 	bool m[100][100] = { {0},{0} }, bin_arr[500] = { 0 };
-	Generator(char date[100], int t_len) {
+	char date[100];
+	void read() {
+		cout << "Introduceti datele: ";
+		cin.get();
+		cin.get(date, 100);
+		this->len = strlen(date);
+	}
+	void type() {
 		if (isalpha(date[0])) {
 			this->k = 8;
 		}
 		else this->k = 4;
-		this->len = t_len * this->k;
+		this->len = this->len * this->k;
 	}
 
-	void to_binary(char s[100]) {
+	void to_binary() {
 		int n = this->len;
 		int b = this->k;
 		int m = 1;
-		for (int i = 0; i < strlen(s); ++i) {
-			int copy_s = (int)s[i];
+		for (int i = 0; i < strlen(this->date); ++i) {
+			int copy_s = (int)this->date[i];
 			int copy_k = this->k;
 			b = copy_k * m;
 			m++;
