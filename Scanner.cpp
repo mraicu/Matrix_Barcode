@@ -11,8 +11,8 @@ using namespace cv;
 
 class Scanner {
 public:
-	int square_size, I, J, mat_size, partition, arr_i = 1;
-	Mat img = imread("img.jpg");
+	int square_size = 0, I, J, mat_size, partition, arr_i = 1;
+	Mat img;
 	Mat w_cam;
 	bool M[500][500], bin_arr[500];
 
@@ -188,7 +188,7 @@ public:
 				//crop img and save in img.jpg
 				int h = (int)sqrt((largest_square[2].x - largest_square[1].x) * (largest_square[2].x - largest_square[1].x) + (largest_square[2].y - largest_square[1].y) * (largest_square[2].y - largest_square[1].y));
 				int w = (int)sqrt((largest_square[1].x - largest_square[0].x) * (largest_square[1].x - largest_square[0].x) + (largest_square[1].y - largest_square[0].y) * (largest_square[1].y - largest_square[0].y));
-				crop_img(w_cam, largest_square[0].x+3, largest_square[0].y+3, w-3, h-3);
+				crop_img(w_cam, largest_square[0].x + 3, largest_square[0].y + 3, w - 3, h - 3);
 			}
 
 		}
@@ -207,20 +207,19 @@ public:
 
 	}
 
-	void crop_img(Mat img,int left_corner_x, int left_corner_y, int width, int height) {
+	void crop_img(Mat img, int left_corner_x, int left_corner_y, int width, int height) {
 		Mat cropped_image = img(Rect(left_corner_x, left_corner_y, width, height));
 		cvtColor(cropped_image, cropped_image, COLOR_BGR2GRAY);
 		imwrite("img.jpg", cropped_image);
 		//this->img = cropped_image;
-		this->img=imread("img__.jpeg");
+		this->img = imread("img__.jpeg");
 	}
 
-	
 	void detect_i_j() {
-		for (int i = 1; i <this->img.rows; i++) {
+		for (int i = 1; i < this->img.rows; i++) {
 			for (int j = 1; j < this->img.cols; j++) {
 				Vec3b bgr_pixel = this->img.at<Vec3b>(i, j);
-				if (bgr_pixel.val[0] < 100 && bgr_pixel.val[1] <100  && bgr_pixel.val[2] <100) {
+				if (bgr_pixel[0] < 100 && bgr_pixel[1] < 100 && bgr_pixel[2] < 100) {
 					this->I = i;
 					this->J = j;
 					return;
@@ -230,33 +229,37 @@ public:
 	}
 
 	void lil_square_size() {
-		for (int i = 0; i <= this->img.rows; i++) {
-			Vec3b bgr_box = this->img.at<Vec3b>(I + i, J + i);
-			if (bgr_box.val[0] > 200 && bgr_box.val[1] > 200 && bgr_box.val[2] > 200) {
-				this->square_size = i;
-				return;
+		for (int i = 0; i < this->img.rows - 5; i++) {
+			if (this->I + i < this->img.rows - 5) {
+				Vec3b bgr_box = this->img.at<Vec3b>(I + i, J + i);
+				if (bgr_box[0] > 100 && bgr_box[1] > 100 && bgr_box[2] > 100) {
+					this->square_size = i;
+					return;
+				}
 			}
 		}
 	}
-
+	// aici
 	void matrix_size() {
 		for (int i = this->I; i <= img.rows; i = i + this->square_size) {
-			Vec3b bgr_matrix_size = this->img.at<Vec3b>(i, J);
-			if (bgr_matrix_size[0] > 200 && bgr_matrix_size[1] > 200 && bgr_matrix_size[2] > 200) {
-				this->mat_size = (i - 1) / this->square_size;
+			if (i+5 < this->img.rows) {
+				Vec3b bgr_matrix_size = this->img.at<Vec3b>(i+5, J);
+				if (bgr_matrix_size[0] > 0 && bgr_matrix_size[1] > 0 && bgr_matrix_size[2] > 0) {
+					this->mat_size = i / this->square_size;
+				}
 			}
 		}
 	}
 
 	void create() {
 		int  i_m = 1, j_m = 1;
-		int last_poz_i = this->square_size * this->mat_size + I;
-		int last_poz_j = this->square_size * this->mat_size + J;
-		for (int i = this->I; i <= last_poz_i; i = i + this->square_size) {
+		int last_poz_i = this->square_size * this->mat_size + I-15;
+		int last_poz_j = this->square_size * this->mat_size + J-15;
+		for (int i = this->I+5; i <= last_poz_i; i = i + this->square_size) {
 			j_m = 1;
 			for (int j = this->J; j <= last_poz_j; j = j + this->square_size) {
 				Vec3b bgr_box_mat = this->img.at<Vec3b>(i, j);
-				this->M[i_m][j_m] = (bgr_box_mat[0] <20 && bgr_box_mat[1] < 20 && bgr_box_mat[2] < 20) ? true : false;
+				this->M[i_m][j_m] = (bgr_box_mat[0] < 20 && bgr_box_mat[1] < 20 && bgr_box_mat[2] < 20) ? true : false;
 				j_m++;
 			}
 			i_m++;
