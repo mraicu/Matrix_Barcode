@@ -12,7 +12,8 @@ using namespace cv;
 class Scanner {
 public:
 	int square_size = 0, I, J, mat_size, partition, arr_i = 1;
-	Mat img;
+	Mat img = imread("img.jpg");
+	//Mat img;
 	Mat w_cam;
 	bool M[500][500], bin_arr[500];
 
@@ -136,7 +137,6 @@ public:
 		// Creating VideoCapture object and opening webcam
 
 		VideoCapture cap(0);
-
 		//Checking if opened  
 		if (!cap.isOpened())
 		{
@@ -208,18 +208,20 @@ public:
 	}
 
 	void crop_img(Mat img, int left_corner_x, int left_corner_y, int width, int height) {
-		Mat cropped_image = img(Rect(left_corner_x, left_corner_y, width, height));
-		cvtColor(cropped_image, cropped_image, COLOR_BGR2GRAY);
-		imwrite("img.jpg", cropped_image);
-		//this->img = cropped_image;
-		this->img = imread("img__.jpeg");
+		if (width <= img.cols && height <=img.rows) {
+			Mat cropped_image = img(Rect(left_corner_x, left_corner_y, width, height));
+			cvtColor(cropped_image, cropped_image, COLOR_BGR2GRAY);
+			imwrite("img.jpg", cropped_image);
+			this->img = cropped_image;
+		}
+		else return;
 	}
 
 	void detect_i_j() {
-		for (int i = 1; i < this->img.rows; i++) {
-			for (int j = 1; j < this->img.cols; j++) {
+		for (int i = 10; i < this->img.rows; i++) {
+			for (int j = 10; j < this->img.cols; j++) {
 				Vec3b bgr_pixel = this->img.at<Vec3b>(i, j);
-				if (bgr_pixel[0] < 100 && bgr_pixel[1] < 100 && bgr_pixel[2] < 100) {
+				if (bgr_pixel[0] < 50 && bgr_pixel[1] < 50 && bgr_pixel[2] < 50) {
 					this->I = i;
 					this->J = j;
 					return;
@@ -239,27 +241,27 @@ public:
 			}
 		}
 	}
-	// aici
+	
 	void matrix_size() {
-		for (int i = this->I; i <= img.rows; i = i + this->square_size) {
-			if (i+5 < this->img.rows) {
-				Vec3b bgr_matrix_size = this->img.at<Vec3b>(i+5, J);
-				if (bgr_matrix_size[0] > 0 && bgr_matrix_size[1] > 0 && bgr_matrix_size[2] > 0) {
-					this->mat_size = i / this->square_size;
+		for (int i = this->I+this->square_size/2; i <= img.rows; i = i + this->square_size) {
+			if (i+15+this->square_size / 2 < this->img.rows) {
+				Vec3b bgr_matrix_size = this->img.at<Vec3b>(i, J);
+				if (bgr_matrix_size[0] > 50 && bgr_matrix_size[1] > 50 && bgr_matrix_size[2] > 50) {
+					this->mat_size = (i-this->I) / this->square_size;
 				}
-			}
+			}else this->mat_size = (i - this->I) / this->square_size+1;
 		}
 	}
 
 	void create() {
 		int  i_m = 1, j_m = 1;
-		int last_poz_i = this->square_size * this->mat_size + I-15;
-		int last_poz_j = this->square_size * this->mat_size + J-15;
-		for (int i = this->I+5; i <= last_poz_i; i = i + this->square_size) {
+		int last_poz_i = this->square_size * this->mat_size ;//198
+		int last_poz_j = this->square_size * this->mat_size ;//198
+		for (int i = this->I+10; i <= last_poz_i; i = i + this->square_size) {//I=10, J=13, square_size=22
 			j_m = 1;
 			for (int j = this->J; j <= last_poz_j; j = j + this->square_size) {
 				Vec3b bgr_box_mat = this->img.at<Vec3b>(i, j);
-				this->M[i_m][j_m] = (bgr_box_mat[0] < 20 && bgr_box_mat[1] < 20 && bgr_box_mat[2] < 20) ? true : false;
+				this->M[i_m][j_m] = (bgr_box_mat[0] < 50 && bgr_box_mat[1] < 50 && bgr_box_mat[2] < 50) ? true : false;
 				j_m++;
 			}
 			i_m++;
@@ -305,7 +307,7 @@ public:
 
 	void show_arr() {
 		for (int i = 1; i <= this->arr_i; i++) {
-			cout << this->bin_arr[i] << " ";
+			cout << this->bin_arr[i] << " "<<endl;
 		}
 	}
 

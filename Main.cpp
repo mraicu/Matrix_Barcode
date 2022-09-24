@@ -21,7 +21,7 @@ int main() {
 	}
 	else if (select == 2) {
 		Scanner sc;
-		sc.img_capture();
+		//sc.img_capture();
 		sc.detect_i_j();
 		sc.lil_square_size();
 		sc.matrix_size();
