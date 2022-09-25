@@ -13,12 +13,14 @@ public:
 	int k, len;
 	bool m[100][100] = { {0},{0} }, bin_arr[500] = { 0 };
 	char date[100];
+
 	void read() {
 		cout << "Introduceti datele: ";
 		cin.get();
 		cin.get(date, 100);
 		this->len = strlen(date);
 	}
+	
 	void type() {
 		if (isalpha(date[0])) {
 			this->k = 8;
@@ -27,6 +29,7 @@ public:
 		this->len = this->len * this->k;
 	}
 
+	//transforming to binary
 	void to_binary() {
 		int n = this->len;
 		int b = this->k;
@@ -45,6 +48,7 @@ public:
 		}
 	}
 
+	//the number of one(for validation)
 	int nr_one() {
 		int nr_1 = 0;
 		for (int i = 1; i <= this->len; i++) {
@@ -53,6 +57,7 @@ public:
 		return nr_1;
 	}
 
+	//minim size of matrix
 	int size() {
 		int i;
 		for (i = 9; i <= 50; ++i) {
@@ -60,6 +65,7 @@ public:
 		}
 	}
 
+	//creating matrix
 	void create() {
 		int n, i, j;
 		bool ok = true;
@@ -155,6 +161,7 @@ public:
 		}
 	}
 
+	//creating QR
 	void show_qr(int l) {
 		int n = this->size();
 		int l_img = n * l + (2 * l);

@@ -21,12 +21,11 @@ int main() {
 	}
 	else if (select == 2) {
 		Scanner sc;
-		//sc.img_capture();
+		sc.img_capture();
 		sc.detect_i_j();
 		sc.lil_square_size();
 		sc.matrix_size();
 		sc.create();
-		sc.show_mat();
 		sc.read_type();
 		sc.data_to_arr();
 		sc.read_arr();
@@ -34,4 +33,3 @@ int main() {
 	}
 	
 }
-//to do: input cod qr, functie de orientare

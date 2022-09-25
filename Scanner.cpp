@@ -12,8 +12,7 @@ using namespace cv;
 class Scanner {
 public:
 	int square_size = 0, I, J, mat_size, partition, arr_i = 1;
-	Mat img = imread("img.jpg");
-	//Mat img;
+	Mat img;
 	Mat w_cam;
 	bool M[500][500], bin_arr[500];
 
@@ -194,10 +193,12 @@ public:
 		}
 
 		// Print the x,y coordinates of the square
-		cout << "Point 0: " << largest_square[0] << endl;
+
+		/*cout << "Point 0: " << largest_square[0] << endl;
 		cout << "Point 1: " << largest_square[1] << endl;
 		cout << "Point 2: " << largest_square[2] << endl;
 		cout << "Point 3: " << largest_square[3] << endl;
+		*/
 
 		// When everything done, release the video capture object
 		cap.release();
@@ -212,14 +213,15 @@ public:
 			Mat cropped_image = img(Rect(left_corner_x, left_corner_y, width, height));
 			cvtColor(cropped_image, cropped_image, COLOR_BGR2GRAY);
 			imwrite("img.jpg", cropped_image);
-			this->img = cropped_image;
+			this->img =imread("img.jpg");
 		}
 		else return;
 	}
 
+	//detecting first black pixel
 	void detect_i_j() {
-		for (int i = 10; i < this->img.rows; i++) {
-			for (int j = 10; j < this->img.cols; j++) {
+		for (int i =6; i < this->img.rows; i++) {
+			for (int j = 6; j < this->img.cols; j++) {
 				Vec3b bgr_pixel = this->img.at<Vec3b>(i, j);
 				if (bgr_pixel[0] < 50 && bgr_pixel[1] < 50 && bgr_pixel[2] < 50) {
 					this->I = i;
@@ -230,6 +232,7 @@ public:
 		}
 	}
 
+	//the size of lil square-element of matrix
 	void lil_square_size() {
 		for (int i = 0; i < this->img.rows - 5; i++) {
 			if (this->I + i < this->img.rows - 5) {
@@ -241,25 +244,27 @@ public:
 			}
 		}
 	}
-	
+
+	//number of cols/rows of matrix
 	void matrix_size() {
 		for (int i = this->I+this->square_size/2; i <= img.rows; i = i + this->square_size) {
-			if (i+15+this->square_size / 2 < this->img.rows) {
+			if (i+10+this->square_size / 2 < this->img.rows) {
 				Vec3b bgr_matrix_size = this->img.at<Vec3b>(i, J);
 				if (bgr_matrix_size[0] > 50 && bgr_matrix_size[1] > 50 && bgr_matrix_size[2] > 50) {
 					this->mat_size = (i-this->I) / this->square_size;
 				}
-			}else this->mat_size = (i - this->I) / this->square_size+1;
+			}else this->mat_size = (i - this->I) / this->square_size;
 		}
 	}
 
+	//creating matrix
 	void create() {
 		int  i_m = 1, j_m = 1;
-		int last_poz_i = this->square_size * this->mat_size ;//198
-		int last_poz_j = this->square_size * this->mat_size ;//198
-		for (int i = this->I+10; i <= last_poz_i; i = i + this->square_size) {//I=10, J=13, square_size=22
+		int last_poz_i = this->square_size * this->mat_size ;
+		int last_poz_j = this->square_size * this->mat_size ;
+		for (int i = this->I+10; i <= last_poz_i; i = i + this->square_size) {
 			j_m = 1;
-			for (int j = this->J; j <= last_poz_j; j = j + this->square_size) {
+			for (int j = this->J+10; j <= last_poz_j; j = j + this->square_size) {
 				Vec3b bgr_box_mat = this->img.at<Vec3b>(i, j);
 				this->M[i_m][j_m] = (bgr_box_mat[0] < 50 && bgr_box_mat[1] < 50 && bgr_box_mat[2] < 50) ? true : false;
 				j_m++;
@@ -267,7 +272,7 @@ public:
 			i_m++;
 		}
 	}
-
+	
 	void show_mat() {
 		for (int i = 1; i <= this->mat_size; i++) {
 			for (int j = 1; j <= this->mat_size; j++) {
@@ -277,10 +282,12 @@ public:
 		}
 	}
 
+	//type of data(number or alphanumeric)
 	void read_type() {
 		this->partition = (this->M[3][2] == 1 && M[4][3] == 1) ? 8 : 4;
 	}
 
+	//transforming data to array
 	void data_to_arr() {
 		bool ok = true;
 		int i, j;
@@ -311,6 +318,7 @@ public:
 		}
 	}
 
+	//reading data from matrix
 	void read_arr() {
 		int multiple = 0;
 		int cpy_bin_i = this->arr_i;
@@ -328,6 +336,7 @@ public:
 			cout << (char)ascii;
 			multiple++;
 		}
+		cout << endl;
 
 
 	}
