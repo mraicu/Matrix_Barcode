@@ -15,7 +15,7 @@ public:
 	char date[100];
 
 	void read() {
-		cout << "Introduceti datele: ";
+		cout << "Dataset: ";
 		cin.get();
 		cin.get(date, 100);
 		this->len = strlen(date);
