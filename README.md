@@ -6,14 +6,18 @@ Containing three cpp files (Generator.cpp, Scanner.cpp, Main.cpp), this project 
 # How To Use
 ## 1. Generator
 The Generator uses console input for creating the QR code.
+
 ![Generator input](Images/Generator_input.jpg)
-Output:
+### Output:
 ![Generator output](Images/Generator_output.jpg)
+
 ## 2. Scanner
  The Scanner is the second part of project, it reads the QR code from the camera using OpenCV. It has to be created by the Generator. 
+
 ![Maria Barcode](Images/Maria_Barcode.png)
 ## Decrypting the QR code
 #### Every QR code has the following partition:
+
 ![Partition](Images/Partition.png)
 - Datasets
 - Data type
