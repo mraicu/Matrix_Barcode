@@ -8,6 +8,7 @@ Containing three cpp files (Generator.cpp, Scanner.cpp, Main.cpp), this project 
 The Generator uses console input for creating the QR code.
 
 ![Generator input](Images/Generator_input.jpg)
+
 ### Output:
 ![Generator output](Images/Generator_output.jpg)
 
